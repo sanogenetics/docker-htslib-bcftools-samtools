@@ -1,5 +1,7 @@
 # docker-htslib-bcftools-samtools
 
+[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/sanogenetics/htslib-bcftools-samtools/1.15.1?style=plastic)](https://hub.docker.com/r/sanogenetics/htslib-bcftools-samtools)
+
 This is a Dockerfile that builds an image based on [amazonlinux:2](https://aws.amazon.com/amazon-linux-2) containing [htslib](http://www.htslib.org/) as well as bcftools and samtools. This also contains the AWS CLI tool.
 
 To read/write from S3 and htslib/bcftools/samtools see the [official instructions](http://www.htslib.org/doc/htslib-s3-plugin.html). In particular, note that it does not support role-based IAM access. A consequence of this is that using AWS Batch execution roles will not allow access to private S3 objects. 
@@ -27,7 +29,7 @@ Note: `--rm` means to remove intermediate containers after a build. You may want
 
 Note: `--progress=plain` may be useful to see all intermediate step logs.
 
-Once built, push to AWS ECR with:
+Push to AWS ECR with:
 
 ```
 aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 244834673510.dkr.ecr.eu-west-2.amazonaws.com
@@ -35,3 +37,14 @@ docker tag htslib-bcftools-samtools:1.15.1 244834673510.dkr.ecr.eu-west-2.amazon
 docker push 244834673510.dkr.ecr.eu-west-2.amazonaws.com/htslib-bcftools-samtools:1.15.1
 docker logout
 ```
+
+Push to DockerHub with:
+
+```
+docker login --username sanogenetics
+docker tag htslib-bcftools-samtools:1.15.1 sanogenetics/htslib-bcftools-samtools:1.15.1
+docker push sanogenetics/htslib-bcftools-samtools:1.15.1
+docker logout
+```
+
+Note: will prompt for password.
