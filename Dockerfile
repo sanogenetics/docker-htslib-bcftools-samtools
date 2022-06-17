@@ -1,5 +1,5 @@
 FROM amazonlinux:2 as buildenv
-ARG VERSION=1.15.1
+ARG VERSION
 
 RUN yum update -y && yum install -y \
   wget \
@@ -13,17 +13,17 @@ RUN yum update -y && yum install -y \
   openssl-devel \
   gsl-devel \
   ncurses-devel
-
+# TODO use libdeflate?
 
 # get htslib
 WORKDIR /tmp/htslib
 RUN wget https://github.com/samtools/htslib/releases/download/${VERSION}/htslib-${VERSION}.tar.bz2
 RUN tar -x -f htslib-${VERSION}.tar.bz2
-WORKDIR /tmp/htslib/htslib-${VERSION}
 
 # build htslib
-RUN ./configure --prefix=/tmp/htslib/output
-RUN make
+WORKDIR /tmp/htslib/htslib-${VERSION}
+RUN ./configure --prefix=/tmp/htslib/output --enable-libcurl --enable-s3
+RUN make -j4
 RUN make install
 
 
@@ -31,11 +31,11 @@ RUN make install
 WORKDIR /tmp/bcftools
 RUN wget https://github.com/samtools/bcftools/releases/download/${VERSION}/bcftools-${VERSION}.tar.bz2
 RUN tar -x -f bcftools-${VERSION}.tar.bz2
-WORKDIR /tmp/bcftools/bcftools-${VERSION}
 
 # build bcftools
+WORKDIR /tmp/bcftools/bcftools-${VERSION}
 RUN ./configure --prefix=/tmp/bcftools/output
-RUN make
+RUN make -j4
 RUN make install
 
 
@@ -43,11 +43,11 @@ RUN make install
 WORKDIR /tmp/samtools
 RUN wget https://github.com/samtools/samtools/releases/download/${VERSION}/samtools-${VERSION}.tar.bz2
 RUN tar -x -f samtools-${VERSION}.tar.bz2
-WORKDIR /tmp/samtools/samtools-${VERSION}
 
 # build samtools
+WORKDIR /tmp/samtools/samtools-${VERSION}
 RUN ./configure --prefix=/tmp/samtools/output
-RUN make
+RUN make -j4
 RUN make install
 
 # put in a fresh container to discard build tooling
