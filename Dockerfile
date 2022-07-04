@@ -1,18 +1,19 @@
-FROM amazonlinux:2 as buildenv
+FROM ubuntu:focal as buildenv
 ARG VERSION
 
-RUN yum update -y && yum install -y \
-  wget \
-  tar \
-  bzip2 bzip2-devel \
-  autoconf automake make \
-  gcc \
-  zlib-devel \
-  xz-devel \
-  curl-devel \
-  openssl-devel \
-  gsl-devel \
-  ncurses-devel
+# make sure nothing is promted for during install
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get install -y \
+    build-essential \
+    libbz2-dev \
+    liblzma-dev \
+    libcurl4-gnutls-dev \
+    libssl-dev \
+    perl \
+    wget \
+    zlib1g-dev
 # TODO use libdeflate?
 
 # get htslib
@@ -46,14 +47,19 @@ RUN wget https://github.com/samtools/samtools/releases/download/${VERSION}/samto
 
 # build samtools
 WORKDIR /tmp/samtools/samtools-${VERSION}
-RUN ./configure --prefix=/tmp/samtools/output
+RUN ./configure --prefix=/tmp/samtools/output --without-curses
 RUN make -j4
 RUN make install
 
 # from https://github.com/aws/aws-cli/blob/v2/docker/Dockerfile
-FROM amazonlinux:2 as awscli
-RUN yum update -y \
-  && yum install -y unzip curl \
+FROM ubuntu:focal  as awscli
+# make sure nothing is promted for during install
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get install -y \
+    curl \
+    unzip \
   && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
   && unzip "awscliv2.zip" \
   && rm "awscliv2.zip" \
@@ -66,11 +72,17 @@ RUN yum update -y \
 
 # put in a fresh container to discard build tooling
 # size from ~1Gb -> ~100Mb
-FROM amazonlinux:2
+FROM ubuntu:focal
+# make sure nothing is promted for during install
+ENV DEBIAN_FRONTEND=noninteractive
+
 # install dependencies
-RUN yum update -y \
-  && yum install -y less groff curl jq \
-  && yum clean all
+RUN apt-get update \
+  && apt-get install -y \
+    curl \
+    groff \
+    jq \
+    less
 
 # install aws cli
 # requires less groff
