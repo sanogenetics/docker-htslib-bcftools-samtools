@@ -2,7 +2,7 @@
 
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/sanogenetics/htslib-bcftools-samtools/1.15.1?style=plastic)](https://hub.docker.com/r/sanogenetics/htslib-bcftools-samtools)
 
-This is a Dockerfile that builds an image based on [amazonlinux:2](https://aws.amazon.com/amazon-linux-2) containing [htslib](http://www.htslib.org/) as well as bcftools and samtools. This also contains the AWS CLI tool.
+This is a Dockerfile that builds an image based on [ubuntu:focal](https://hub.docker.com/_/ubuntu) containing [htslib](http://www.htslib.org/) as well as bcftools and samtools. This also contains the AWS CLI tool.
 
 To read/write from S3 and htslib/bcftools/samtools see the [official instructions](http://www.htslib.org/doc/htslib-s3-plugin.html). In particular, note that it does not support role-based IAM access. A consequence of this is that using AWS Batch execution roles will not allow access to private S3 objects. 
 
@@ -21,7 +21,7 @@ To build this container, use a command like:
 ```
 docker build \
   --rm \
-  --build-arg VERSION=1.15.1
+  --build-arg VERSION=1.15.1 \
   --tag htslib-bcftools-samtools:1.15.1 .
 ```
 
