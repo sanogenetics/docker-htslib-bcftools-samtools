@@ -82,7 +82,8 @@ RUN apt-get update \
     curl \
     groff \
     jq \
-    less
+    less \
+    libcurl4-gnutls-dev
 
 # install aws cli
 # requires less groff
