@@ -1,0 +1,47 @@
+version: 2.1
+
+jobs:
+  pytest:
+    docker:
+      - image: cimg/base:2021.04
+        auth:
+          username: $DOCKERHUB_USERNAME # context environment variable reference
+          password: $DOCKERHUB_PASSWORD # context environment variable reference
+    # 1vCPU & 2GB = small
+    # 2vCPU & 4GB = medium
+    resource_class: small
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - run:
+          name: Build Docker image
+          command: |
+            docker build \
+              --build-arg VERSION=1.15.1 \
+              --tag htslib-bcftools-samtools:1.15.1 \
+              --tag htslib-bcftools-samtools:latest \
+              .
+
+      - when:
+          condition:
+            equal: [ "master", << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Push to Dockerhub
+                command: |
+                  docker logout
+                  docker login --username sanogenetics --password $DOCKERHUB_PASSWORD
+                  docker push sanogenetics/htslib-bcftools-samtools:1.15.1
+                  docker push sanogenetics/htslib-bcftools-samtools:latest
+                  docker logout
+
+
+
+workflows:
+  tests:
+    jobs:
+      - pytest:
+          context:
+            - "docker_hub_creds"

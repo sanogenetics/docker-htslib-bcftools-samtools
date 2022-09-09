@@ -22,7 +22,9 @@ To build this container, use a command like:
 docker build \
   --rm \
   --build-arg VERSION=1.15.1 \
-  --tag htslib-bcftools-samtools:1.15.1 .
+  --tag htslib-bcftools-samtools:1.15.1 \
+  --tag htslib-bcftools-samtools:latest \
+  .
 ```
 
 Note: `--rm` means to remove intermediate containers after a build. You may want to omit this if developing locally to utilize docker layer caching.
@@ -35,6 +37,8 @@ Push to AWS ECR with:
 aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 244834673510.dkr.ecr.eu-west-2.amazonaws.com
 docker tag htslib-bcftools-samtools:1.15.1 244834673510.dkr.ecr.eu-west-2.amazonaws.com/htslib-bcftools-samtools:1.15.1
 docker push 244834673510.dkr.ecr.eu-west-2.amazonaws.com/htslib-bcftools-samtools:1.15.1
+docker tag htslib-bcftools-samtools:latest 244834673510.dkr.ecr.eu-west-2.amazonaws.com/htslib-bcftools-samtools:latest
+docker push 244834673510.dkr.ecr.eu-west-2.amazonaws.com/htslib-bcftools-samtools:latest
 docker logout
 ```
 
@@ -44,6 +48,8 @@ Push to DockerHub with:
 docker login --username sanogenetics
 docker tag htslib-bcftools-samtools:1.15.1 sanogenetics/htslib-bcftools-samtools:1.15.1
 docker push sanogenetics/htslib-bcftools-samtools:1.15.1
+docker tag htslib-bcftools-samtools:latest sanogenetics/htslib-bcftools-samtools:latest
+docker push sanogenetics/htslib-bcftools-samtools:latest
 docker logout
 ```
 
