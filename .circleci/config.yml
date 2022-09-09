@@ -33,7 +33,9 @@ jobs:
                 command: |
                   docker logout
                   docker login --username sanogenetics --password $DOCKERHUB_PASSWORD
+                  docker tag htslib-bcftools-samtools:1.15.1 sanogenetics/htslib-bcftools-samtools:1.15.1
                   docker push sanogenetics/htslib-bcftools-samtools:1.15.1
+                  docker tag htslib-bcftools-samtools:latest sanogenetics/htslib-bcftools-samtools:latest
                   docker push sanogenetics/htslib-bcftools-samtools:latest
                   docker logout
 
