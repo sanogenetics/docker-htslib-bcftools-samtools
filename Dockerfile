@@ -95,6 +95,10 @@ COPY --from=awscli /aws-cli-bin/ /usr/local/bin/
 COPY --from=buildenv /tmp/htslib/output/bin /usr/local/bin/
 COPY --from=buildenv /tmp/bcftools/output/bin /usr/local/bin/
 COPY --from=buildenv /tmp/samtools/output/bin /usr/local/bin/
+# also copy plugins
+COPY --from=buildenv /tmp/bcftools/output/libexec /usr/libexec/
+# set an environment variable to point at the plugin location
+ENV BCFTOOLS_PLUGINS=/usr/libexec/bcftools
 
 # install s3role convenience script
 # requires jq curl
