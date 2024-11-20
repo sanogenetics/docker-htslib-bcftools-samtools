@@ -1,4 +1,4 @@
-FROM ubuntu:focal as buildenv
+FROM ubuntu:latest as buildenv
 ARG VERSION
 
 # make sure nothing is promted for during install
@@ -52,7 +52,7 @@ RUN make -j4
 RUN make install
 
 # from https://github.com/aws/aws-cli/blob/v2/docker/Dockerfile
-FROM ubuntu:focal  as awscli
+FROM ubuntu:latest  as awscli
 # make sure nothing is promted for during install
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -72,7 +72,7 @@ RUN apt-get update \
 
 # put in a fresh container to discard build tooling
 # size from ~1Gb -> ~100Mb
-FROM ubuntu:focal
+FROM ubuntu:latest
 # make sure nothing is promted for during install
 ENV DEBIAN_FRONTEND=noninteractive
 
